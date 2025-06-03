@@ -30,9 +30,9 @@ HSPRITE LoadSprite(const char* pszName)
 	int iRes;
 	char sz[256]; 
 
-	if (ScreenWidth > 2560 && ScreenHeight > 1600)
+	if (gHUD.IsHL25() && ScreenWidth > 2560 && ScreenHeight > 1600)
 		iRes = 2560;
-	else if (ScreenWidth >= 1280 && ScreenHeight > 720)
+	else if (gHUD.IsHL25() && ScreenWidth >= 1280 && ScreenHeight > 720)
 		iRes = 1280;
 	else if (ScreenWidth >= 640)
 		iRes = 640;

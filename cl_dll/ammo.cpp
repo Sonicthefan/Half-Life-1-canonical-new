@@ -73,9 +73,9 @@ void WeaponsResource::LoadWeaponSprites(WEAPON* pWeapon)
 {
 	int i, iRes;
 
-	if (ScreenWidth > 2560 && ScreenHeight > 1600)
+	if (gHUD.IsHL25() && ScreenWidth > 2560 && ScreenHeight > 1600)
 		iRes = 2560;
-	else if (ScreenWidth >= 1280 && ScreenHeight > 720)
+	else if (gHUD.IsHL25() && ScreenWidth >= 1280 && ScreenHeight > 720)
 		iRes = 1280;
 	else if (ScreenWidth >= 640)
 		iRes = 640;
@@ -329,9 +329,9 @@ bool CHudAmmo::VidInit()
 
 	int nScale = 1;
 
-	if (ScreenWidth > 2560 && ScreenHeight > 1600)
+	if (gHUD.IsHL25() && ScreenWidth > 2560 && ScreenHeight > 1600)
 		nScale = 4;
-	else if (ScreenWidth >= 1280 && ScreenHeight > 720)
+	else if (gHUD.IsHL25() && ScreenWidth >= 1280 && ScreenHeight > 720)
 		nScale = 3;
 	else if (ScreenWidth >= 640)
 		nScale = 2;

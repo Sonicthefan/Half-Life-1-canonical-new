@@ -71,7 +71,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\..\utils\vgui\lib\win32_vc16\vgui.lib;wsock32.lib;..\..\lib\public\sdl2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\utils\vgui\lib\win32_vc16\vgui.lib;wsock32.lib;..\..\lib\public\sdl2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <BaseAddress>
       </BaseAddress>
     </Link>
@@ -104,7 +104,7 @@ cmd /c ""$(ProjectDir)..\..\filecopy.bat" "$(SolutionDir)../../network" "" "delt
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>..\..\utils\vgui\lib\win32_vc16\vgui.lib;wsock32.lib;..\..\lib\public\sdl2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\utils\vgui\lib\win32_vc16\vgui.lib;wsock32.lib;..\..\lib\public\sdl2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <BaseAddress>
       </BaseAddress>
     </Link>
@@ -152,6 +152,7 @@ cmd /c ""$(ProjectDir)..\..\filecopy.bat" "$(SolutionDir)../../network" "" "delt
     <ClCompile Include="..\..\cl_dll\particleman\CMiniMem.cpp" />
     <ClCompile Include="..\..\cl_dll\particleman\CFrustum.cpp" />
     <ClCompile Include="..\..\cl_dll\particleman\IParticleMan_Active.cpp" />
+    <ClCompile Include="..\..\cl_dll\r_ripples.cpp" />
     <ClCompile Include="..\..\cl_dll\saytext.cpp" />
     <ClCompile Include="..\..\cl_dll\statusbar.cpp" />
     <ClCompile Include="..\..\cl_dll\status_icons.cpp" />
@@ -226,6 +227,7 @@ cmd /c ""$(ProjectDir)..\..\filecopy.bat" "$(SolutionDir)../../network" "" "delt
     <ClInclude Include="..\..\cl_dll\particleman\particleman.h" />
     <ClInclude Include="..\..\cl_dll\particleman\particleman_internal.h" />
     <ClInclude Include="..\..\cl_dll\particleman\CMiniMem.h" />
+    <ClInclude Include="..\..\cl_dll\r_ripples.h" />
     <ClInclude Include="..\..\cl_dll\StudioModelRenderer.h" />
     <ClInclude Include="..\..\cl_dll\tri.h" />
     <ClInclude Include="..\..\cl_dll\vgui_int.h" />
@@ -233,6 +235,7 @@ cmd /c ""$(ProjectDir)..\..\filecopy.bat" "$(SolutionDir)../../network" "" "delt
     <ClInclude Include="..\..\cl_dll\vgui_ScorePanel.h" />
     <ClInclude Include="..\..\cl_dll\vgui_SpectatorPanel.h" />
     <ClInclude Include="..\..\cl_dll\view.h" />
+    <ClInclude Include="..\..\cl_dll\warpsin.h" />
     <ClInclude Include="..\..\common\beamdef.h" />
     <ClInclude Include="..\..\common\cl_entity.h" />
     <ClInclude Include="..\..\common\common_types.h" />

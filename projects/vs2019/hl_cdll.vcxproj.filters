@@ -64,6 +64,9 @@
     <Filter Include="Source Files\cl_dll\particleman">
       <UniqueIdentifier>{7085339d-2b33-4cdf-846c-0e4c7d33add8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\water_ripples">
+      <UniqueIdentifier>{9b2e2a3c-8dab-4fb7-b7df-7bfe36af5fa3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\dlls\crossbow.cpp">
@@ -320,6 +323,9 @@
     </ClCompile>
     <ClCompile Include="..\..\cl_dll\particleman\CBaseParticle.cpp">
       <Filter>Source Files\cl_dll\particleman</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cl_dll\r_ripples.cpp">
+      <Filter>Source Files\water_ripples</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -595,6 +601,12 @@
     </ClInclude>
     <ClInclude Include="..\..\cl_dll\particleman\CBaseParticle.h">
       <Filter>Header Files\cl_dll\particleman</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cl_dll\warpsin.h">
+      <Filter>Header Files\engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cl_dll\r_ripples.h">
+      <Filter>Header Files\cl_dll</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
