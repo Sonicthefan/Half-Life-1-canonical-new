@@ -964,6 +964,7 @@ public:
 	void EndAttack();
 	void Attack();
 	void PrimaryAttack() override;
+	void SecondaryAttack() override;
 	bool ShouldWeaponIdle() override { return true; }
 	void WeaponIdle() override;
 
@@ -994,9 +995,10 @@ public:
 
 	unsigned short m_usEgonStop;
 
+	EGON_FIREMODE m_fireMode;
+
 private:
 	float m_shootTime;
-	EGON_FIREMODE m_fireMode;
 	float m_shakeTime;
 	bool m_deployed;
 

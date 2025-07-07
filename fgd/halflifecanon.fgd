@@ -1999,6 +1999,9 @@
 		81 : "plunger"
 	]
 ]
+@PointClass base(Monster, Sequence) studio("models/zombie_barney.mdl") = monster_zombie_barney : "Barney Zombie" []
+@PointClass base(Monster, Sequence) studio("models/zombie_soldier.mdl") = monster_zombie_soldier : "Soldier Zombie" []
+@PointClass base(Monster, Sequence) studio("models/zombie_soldier.mdl") = monster_zombie_soldier_dead : "Dead Soldier Zombie"
 @PointClass base(Monster, Sequence) size(-32 -32 0, 32 32 64) studio("models/icky.mdl") = monster_ichthyosaur : "Ichthyosaur" []
 @PointClass base(Monster, Sequence) size(-6 -6 0, 6 6 6) studio("models/leech.mdl") = monster_leech : "Leech" []
 @PointClass base(Monster, Sequence) size(-16 -16 -32, 16 16 32) studio("models/miniturret.mdl") = monster_miniturret : "Mini Auto Turret"

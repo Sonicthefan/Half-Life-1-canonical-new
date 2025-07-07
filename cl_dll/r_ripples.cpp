@@ -125,7 +125,7 @@ InitRipples
 */
 void CRipples::InitRipples()
 {
-	r_ripple = CVAR_CREATE("r_ripple", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+	r_ripple = CVAR_CREATE("r_ripple", "1", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
 	r_ripple_updatetime = CVAR_CREATE("r_ripple_updatetime", "0.05", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
 	r_ripple_spawntime = CVAR_CREATE("r_ripple_spawntime", "0.1", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
 	gl_texturemode = gEngfuncs.pfnGetCvarPointer("gl_texturemode");
