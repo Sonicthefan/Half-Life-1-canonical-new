@@ -132,22 +132,6 @@ void CGrenade::Explode(TraceResult* pTrace, int bitsDamageType)
 		for (int i = 0; i < sparkCount; i++)
 			Create("spark_shower", pev->origin, pTrace->vecPlaneNormal, NULL);
 	}
-	    //Custom : HL Alpha like explosion shrapnels
-    MESSAGE_BEGIN(MSG_PAS, SVC_TEMPENTITY, pev->origin);
-    WRITE_BYTE(TE_EXPLODEMODEL);
-    WRITE_COORD(pev->origin.x);            // coord, coord, coord (origin)
-    WRITE_COORD(pev->origin.y);
-    WRITE_COORD(pev->origin.z);
-    
-    WRITE_COORD(RANDOM_LONG(100, 200)); // coord (velocity)
-
-    WRITE_SHORT(g_sModelIndexShrapnel); // short (model index)
-
-    WRITE_COORD(RANDOM_LONG(6, 12));    // short (count)
-    
-    WRITE_BYTE(RANDOM_LONG(20, 30));    // byte (life in 0.1's)
-
-    MESSAGE_END();
 }
 
 
@@ -218,6 +202,38 @@ void CGrenade::ExplodeTouch(CBaseEntity* pOther)
 
 	vecSpot = pev->origin - pev->velocity.Normalize() * 32;
 	UTIL_TraceLine(vecSpot, vecSpot + pev->velocity.Normalize() * 64, ignore_monsters, ENT(pev), &tr);
+
+	// Custom : HL Alpha like explosion shrapnels
+	// Very hacky : only mp5 grenades have this dmg value
+
+	if (pev->dmg == gSkillData.plrDmgM203Grenade)
+	{
+		if (tr.flFraction != 1.0)
+		{
+			pev->origin = tr.vecEndPos + (tr.vecPlaneNormal * 0.6);
+		}
+
+		MESSAGE_BEGIN(MSG_PAS, SVC_TEMPENTITY, pev->origin);
+		WRITE_BYTE(TE_EXPLODEMODEL);
+		WRITE_COORD(pev->origin.x); // coord, coord, coord (origin)
+		WRITE_COORD(pev->origin.y);
+		WRITE_COORD(pev->origin.z);
+
+		WRITE_COORD(RANDOM_LONG(200, 300)); // coord (velocity)
+
+		WRITE_SHORT(g_sModelIndexShrapnel); // short (model index)
+
+		WRITE_COORD(RANDOM_LONG(6, 12)); // short (count)
+
+		WRITE_BYTE(RANDOM_LONG(20, 30)); // byte (life in 0.1's)
+
+		MESSAGE_END();
+
+		if (tr.flFraction != 1.0)
+		{
+			pev->origin = tr.vecEndPos + (tr.vecPlaneNormal * 1.4);
+		}
+	}
 
 	Explode(&tr, DMG_BLAST);
 }
