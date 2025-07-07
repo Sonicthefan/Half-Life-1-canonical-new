@@ -1322,6 +1322,11 @@ void CBaseMonster::TraceAttack(entvars_t* pevAttacker, float flDamage, Vector ve
 {
 	if (0 != pev->takedamage)
 	{
+		//Custom : HL alpha like blood trail
+        if (m_bloodColor == BLOOD_COLOR_RED)
+        {
+            UTIL_BloodStream(ptr->vecEndPos, gpGlobals->v_forward * -35 + gpGlobals->v_up * 2.1, BLOOD_COLOR_RED, RANDOM_LONG(90,110)); 
+        }
 		m_LastHitGroup = ptr->iHitgroup;
 
 		switch (ptr->iHitgroup)

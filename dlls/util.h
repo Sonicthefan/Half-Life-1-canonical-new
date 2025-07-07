@@ -174,7 +174,7 @@ inline bool FStringNull(int iString)
 
 // All monsters need this data
 #define DONT_BLEED -1
-#define BLOOD_COLOR_RED (byte)247
+#define BLOOD_COLOR_RED (byte)73
 #define BLOOD_COLOR_YELLOW (byte)195
 #define BLOOD_COLOR_GREEN BLOOD_COLOR_YELLOW
 

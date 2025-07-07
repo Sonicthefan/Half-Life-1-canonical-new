@@ -132,6 +132,22 @@ void CGrenade::Explode(TraceResult* pTrace, int bitsDamageType)
 		for (int i = 0; i < sparkCount; i++)
 			Create("spark_shower", pev->origin, pTrace->vecPlaneNormal, NULL);
 	}
+	    //Custom : HL Alpha like explosion shrapnels
+    MESSAGE_BEGIN(MSG_PAS, SVC_TEMPENTITY, pev->origin);
+    WRITE_BYTE(TE_EXPLODEMODEL);
+    WRITE_COORD(pev->origin.x);            // coord, coord, coord (origin)
+    WRITE_COORD(pev->origin.y);
+    WRITE_COORD(pev->origin.z);
+    
+    WRITE_COORD(RANDOM_LONG(100, 200)); // coord (velocity)
+
+    WRITE_SHORT(g_sModelIndexShrapnel); // short (model index)
+
+    WRITE_COORD(RANDOM_LONG(6, 12));    // short (count)
+    
+    WRITE_BYTE(RANDOM_LONG(20, 30));    // byte (life in 0.1's)
+
+    MESSAGE_END();
 }
 
 

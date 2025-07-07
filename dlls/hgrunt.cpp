@@ -42,6 +42,9 @@
 #include "effects.h"
 #include "customentity.h"
 
+//Blown off head mechanic
+#include "player.h"
+
 int g_fGruntQuestion; // true if an idle grunt asked a question. Cleared when someone answers.
 
 //=========================================================
@@ -66,10 +69,18 @@ int g_fGruntQuestion; // true if an idle grunt asked a question. Cleared when so
 #define HEAD_COMMANDER 1
 #define HEAD_SHOTGUN 2
 #define HEAD_M203 3
+
+//Blown off head mechanic
+#define HEAD_BLOWNOFF 4
+
 #define GUN_GROUP 2
 #define GUN_MP5 0
 #define GUN_SHOTGUN 1
 #define GUN_NONE 2
+
+//Blown off head mechanic
+//A shotgun shot where every bullet hits the target deals on average 30 dmg points
+#define HEAD_BLOWNOFF_DMG_TRESHOLD 25
 
 //=========================================================
 // Monster's Anim Events Go Here
@@ -305,6 +316,66 @@ void CHGrunt::GibMonster()
 				pGun->pev->avelocity = Vector(0, RANDOM_FLOAT(200, 400), 0);
 			}
 		}
+	}
+
+	//Blown off head mechanic
+
+	//Skip the code below, we don't want to create another head
+	// 
+	//int bodygroup = GetBodygroup(HEAD_GROUP);
+	//ALERT(at_aiconsole, "Bodygroup is : %i \n", bodygroup);
+
+	if (HEAD_BLOWNOFF == GetBodygroup(HEAD_GROUP))
+	{
+		EMIT_SOUND(ENT(pev), CHAN_WEAPON, "common/bodysplat.wav", 1, ATTN_NORM);
+
+		if (CVAR_GET_FLOAT("violence_hgibs") != 0)
+		{
+			CGib::SpawnRandomGibs(pev, 4, true);
+		}
+
+		SetThink(&CHGrunt::SUB_Remove);
+		pev->nextthink = gpGlobals->time;
+
+		return;
+	}
+
+	//Spawn 2 gibs coming from the legs
+
+	for (int i = 0; i <= 1; i++)
+	{
+		CGib* pGib = GetClassPtr((CGib*)NULL);
+		pGib->Spawn("models/GIB_Hgrunt.mdl");
+		pGib->pev->body = 0;
+
+		switch (i)
+		{
+		case 0:
+		default:
+			pGib->pev->origin = pev->origin + Vector(0, -6, 25);
+			break;
+		case 1:
+			pGib->pev->origin = pev->origin + Vector(0, 6, 25);
+			break;
+		}
+
+		pGib->pev->velocity.x += RANDOM_FLOAT(-0.25, 0.25);
+		pGib->pev->velocity.y += RANDOM_FLOAT(-0.25, 0.25);
+		pGib->pev->velocity.z += RANDOM_FLOAT(-0.25, 0.25);
+
+		pGib->pev->velocity = pGib->pev->velocity * RANDOM_FLOAT(300, 400);
+
+		pGib->pev->avelocity.x = RANDOM_FLOAT(100, 200);
+		pGib->pev->avelocity.y = RANDOM_FLOAT(100, 300);
+
+		pGib->m_bloodColor = BLOOD_COLOR_RED;
+
+		pGib->pev->velocity = pGib->pev->velocity * 1.3;
+
+		pGib->pev->solid = SOLID_BBOX;
+		UTIL_SetSize(pGib->pev, Vector(0, 0, 0), Vector(0, 0, 0));
+
+		pGib->LimitVelocity();
 	}
 
 	CBaseMonster::GibMonster();
@@ -601,6 +672,77 @@ bool CHGrunt::CheckRangeAttack2(float flDot, float flDist)
 //=========================================================
 void CHGrunt::TraceAttack(entvars_t* pevAttacker, float flDamage, Vector vecDir, TraceResult* ptr, int bitsDamageType)
 {
+	// Blown off head mechanic
+
+	bool bCanBlowHead = false;
+
+	CBasePlayer* player = nullptr;
+
+	if (pevAttacker->flags & FL_CLIENT) //To check if it's a player
+	{
+		CBaseMonster* tmp = GetMonsterPointer(pevAttacker);
+		player = (CBasePlayer*)(tmp);
+	}
+
+	int weapon = 0;
+
+	if (player)
+	{
+		weapon = (player->m_pActiveItem != NULL) ? player->m_pActiveItem->m_iId : 0;
+	}
+
+	//That has to be the worst block of code I ever wrote in my life
+
+	if (GetBodygroup(HEAD_GROUP) != HEAD_BLOWNOFF)
+	{
+		if (weapon == WEAPON_SHOTGUN || flDamage >= HEAD_BLOWNOFF_DMG_TRESHOLD)
+		{
+			if (weapon == WEAPON_SHOTGUN && flDamage >= gSkillData.plrDmgBuckshot)
+			{
+				if (ptr->iHitgroup == 11 && (RANDOM_LONG(0, 7) == 0)) // head hitgroup + randomness
+					bCanBlowHead = true;
+			}
+			else if (weapon != WEAPON_SHOTGUN && ptr->iHitgroup == 11) // head hitgroup
+				bCanBlowHead = true;
+		}
+	}
+
+	//Has priority over the helmet ricochet feature
+	if (bCanBlowHead)
+	{
+		//ALERT(at_aiconsole, "Blowing off hgrunt head !\n");
+
+		SetBodygroup(HEAD_GROUP, HEAD_BLOWNOFF);
+
+		// Make his head fall off
+	
+		CGib* pGib = GetClassPtr((CGib*)NULL);
+		
+		pGib->Spawn("models/hgibs.mdl");
+		pGib->pev->body = 0; //head
+		
+		//gibs might spawn in the grunt and float in the air, to prevent that spawn the skull higher
+		pGib->pev->origin = pev->origin + Vector(0, 0, 73); //73 is the eye height
+
+		pGib->pev->velocity = Vector(RANDOM_FLOAT(-100, 100), RANDOM_FLOAT(-100, 100), RANDOM_FLOAT(200, 300));
+		pGib->pev->avelocity.x = RANDOM_FLOAT(100, 200);
+		pGib->pev->avelocity.y = RANDOM_FLOAT(100, 300);
+		pGib->m_bloodColor = BLOOD_COLOR_RED;
+		pGib->pev->velocity = pGib->pev->velocity * 1.2;
+		pGib->LimitVelocity();
+
+		//Blood trail effect
+
+		//BLOOD_COLOR_RED doesn't produce good results, comment it out or replace BLOOD_COLOR_RED to 73 in const.h if you want
+		UTIL_BloodStream(pev->origin + Vector(0, 0, 73), Vector(RANDOM_FLOAT(-0.5, 0.5), RANDOM_FLOAT(-0.5, 0.5), 2).Normalize(), BLOOD_COLOR_RED, RANDOM_LONG(60, 90));
+
+
+		//So that we can have headshot death animations
+		ptr->iHitgroup == HITGROUP_HEAD;
+		//You're dead
+		pev->health = 0;
+	}
+
 	// check for helmet shot
 	if (ptr->iHitgroup == 11)
 	{
@@ -617,6 +759,7 @@ void CHGrunt::TraceAttack(entvars_t* pevAttacker, float flDamage, Vector vecDir,
 		}
 		// it's head shot anyways
 		ptr->iHitgroup = HITGROUP_HEAD;
+		
 	}
 	CSquadMonster::TraceAttack(pevAttacker, flDamage, vecDir, ptr, bitsDamageType);
 }
@@ -1076,6 +1219,9 @@ void CHGrunt::Precache()
 
 	m_iBrassShell = PRECACHE_MODEL("models/shell.mdl"); // brass shell
 	m_iShotgunShell = PRECACHE_MODEL("models/shotgunshell.mdl");
+
+	//For the leg gib
+	PRECACHE_MODEL("models/GIB_Hgrunt.mdl");
 }
 
 //=========================================================
