@@ -80,10 +80,11 @@ bool CEgon::Deploy()
 
 void CEgon::Holster()
 {
-	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
-	SendWeaponAnim(EGON_HOLSTER);
 
 	EndAttack();
+
+	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.5;
+	SendWeaponAnim(EGON_HOLSTER);
 }
 
 bool CEgon::GetItemInfo(ItemInfo* p)
@@ -216,6 +217,38 @@ void CEgon::PrimaryAttack()
 {
 	m_fireMode = FIRE_WIDE;
 	Attack();
+	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.01f;
+	m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5f;
+}
+
+void CEgon::SecondaryAttack()
+{
+	if (m_fireState == FIRE_OFF)
+	{
+		m_fireState = FIRE_PREPARE;
+		m_flAnimTime = UTIL_WeaponTimeBase() + 1.53;
+		m_flNextSecondaryAttack = m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 1.33f;
+		SendWeaponAnim(EGON_ALTFIREON);
+		return;
+	}
+	
+	if (m_fireState == FIRE_PREPARE)
+	{
+		m_fireState = FIRE_OFF;
+	}
+
+	if (m_flAnimTime <= UTIL_WeaponTimeBase())
+	{
+		SendWeaponAnim(EGON_ALTFIRECYCLE);
+		m_flAnimTime = UTIL_WeaponTimeBase() + 0.53;
+	}
+
+	m_fireMode = FIRE_NARROW;
+	Attack();
+
+	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 0.01f;
+
+	m_flNextPrimaryAttack = UTIL_WeaponTimeBase() + 0.7f;
 }
 
 void CEgon::Fire(const Vector& vecOrigSrc, const Vector& vecDir)
@@ -376,7 +409,6 @@ void CEgon::UpdateEffect(const Vector& startPoint, const Vector& endPoint, float
 	else
 		m_pBeam->SetColor(60 + (25 * timeBlend), 120 + (30 * timeBlend), 64 + 80 * fabs(sin(gpGlobals->time * 10)));
 
-
 	UTIL_SetOrigin(m_pSprite->pev, endPoint);
 	m_pSprite->pev->frame += 8 * gpGlobals->frametime;
 	if (m_pSprite->pev->frame > m_pSprite->Frames())
@@ -466,19 +498,17 @@ void CEgon::DestroyEffect()
 
 void CEgon::WeaponIdle()
 {
-	if ((m_pPlayer->m_afButtonPressed & IN_ATTACK2) == 0 && (m_pPlayer->pev->button & IN_ATTACK) != 0)
-	{
-		return;
-	}
-
 	ResetEmptySound();
 
 	if (m_flTimeWeaponIdle > UTIL_WeaponTimeBase())
 		return;
 
 	if (m_fireState != FIRE_OFF)
+	{
 		EndAttack();
-
+		if (m_fireMode == FIRE_NARROW)
+			return;
+	}
 	int iAnim;
 
 	float flRand = RANDOM_FLOAT(0, 1);
@@ -518,11 +548,15 @@ void CEgon::EndAttack()
 		bMakeNoise = true;
 
 	PLAYBACK_EVENT_FULL(FEV_GLOBAL | FEV_RELIABLE, m_pPlayer->edict(), m_usEgonStop, 0, m_pPlayer->pev->origin, m_pPlayer->pev->angles, 0.0, 0.0,
-		static_cast<int>(bMakeNoise), 0, 0, 0);
+		static_cast<int>(bMakeNoise), 0, m_fireMode == FIRE_NARROW ? 1 : 0, 0);
+
+	SendWeaponAnim(EGON_ALTFIREOFF);
 
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 2.0;
 
-	m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 0.5;
+	m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + m_fireMode == FIRE_NARROW ? 0.7 : 0.5;
+
+	m_flAnimTime = 0;
 
 	m_fireState = FIRE_OFF;
 

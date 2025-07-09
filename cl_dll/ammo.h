@@ -53,4 +53,9 @@ struct WEAPON
 	Rect rcZoomedCrosshair;
 	HSPRITE hZoomedAutoaim;
 	Rect rcZoomedAutoaim;
+	
+	HSPRITE hActive_sil;
+	Rect rcActive_sil;
+	HSPRITE hInactive_sil;
+	Rect rcInactive_sil;
 };

@@ -204,7 +204,7 @@ void CBasePlayerWeapon::ItemPostFrame()
 
 void CBasePlayer::SelectLastItem()
 {
-	if (!m_pLastItem)
+	if (!m_pLastItem || m_pNextItem)
 	{
 		return;
 	}
@@ -221,22 +221,9 @@ void CBasePlayer::SelectLastItem()
 		m_pActiveItem->Holster();
 
 	CBasePlayerItem* pTemp = m_pActiveItem;
-	m_pActiveItem = m_pLastItem;
+	auto weapon = m_pLastItem;
 	m_pLastItem = pTemp;
 
-	auto weapon = m_pActiveItem->GetWeaponPtr();
-
-	if (weapon)
-	{
-		weapon->m_ForceSendAnimations = true;
-	}
-
-	m_pActiveItem->Deploy();
-
-	if (weapon)
-	{
-		weapon->m_ForceSendAnimations = false;
-	}
-
-	m_pActiveItem->UpdateItemInfo();
+	m_pNextItem = weapon;
+	m_flNextAttack = UTIL_WeaponTimeBase();
 }

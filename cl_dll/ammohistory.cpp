@@ -158,8 +158,17 @@ bool HistoryResource::DrawAmmoHistory(float flTime)
 
 				int ypos = ScreenHeight - (AMMO_PICKUP_PICK_HEIGHT + (AMMO_PICKUP_GAP * i));
 				int xpos = ScreenWidth - (weap->rcInactive.right - weap->rcInactive.left);
-				SPR_Set(weap->hInactive, r, g, b);
-				SPR_DrawAdditive(0, xpos, ypos, &weap->rcInactive);
+
+				if (weap->iId == WEAPON_GLOCK && gHUD.HasWeapon(WEAPON_GLOCK_SILENCER))
+				{
+					SPR_Set(weap->hInactive_sil, r, g, b);
+					SPR_DrawAdditive(0, xpos, ypos, &weap->rcInactive_sil);
+				}
+				else
+				{
+					SPR_Set(weap->hInactive, r, g, b);
+					SPR_DrawAdditive(0, xpos, ypos, &weap->rcInactive);
+				}
 			}
 			else if (rgAmmoHistory[i].type == HISTSLOT_ITEM)
 			{

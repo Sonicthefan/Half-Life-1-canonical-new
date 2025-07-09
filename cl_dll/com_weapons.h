@@ -29,6 +29,18 @@ unsigned short stub_PrecacheEvent(int type, const char* s);
 const char* stub_NameForFunction(uint32 function);
 void stub_SetModel(struct edict_s* e, const char* m);
 
+void stub_MessageBegin(int msg_dest, int msg_type, const float* pOrigin, struct edict_s* ed);
+void stub_MessageEnd();
+void stub_WriteByte(int iValue);
+void stub_WriteChar(int iValue);
+void stub_WriteShort(int iValue);
+void stub_WriteLong(int iValue);
+void stub_WriteAngle(float flValue);
+void stub_WriteCoord(float flValue);
+void stub_WriteString(const char* sz);
+void stub_WriteEntity(int iValue);
+
+
 
 extern cvar_t* cl_lw;
 

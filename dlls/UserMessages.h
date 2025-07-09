@@ -55,4 +55,7 @@ inline int gmsgStatusValue = 0;
 
 inline int gmsgWeapons = 0;
 
+inline int gmsgSetBody = 0;
+inline int gmsgSetWpnAnim = 0;
+
 void LinkUserMessages();

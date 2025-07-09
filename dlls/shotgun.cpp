@@ -90,6 +90,15 @@ bool CShotgun::Deploy()
 	return DefaultDeploy("models/v_shotgun.mdl", "models/p_shotgun.mdl", SHOTGUN_DRAW, "shotgun");
 }
 
+void CShotgun::Holster()
+{
+	m_fInReload = false; // cancel any reload in progress.
+
+	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.37;
+
+	SendWeaponAnim(SHOTGUN_HOLSTER);
+}
+
 void CShotgun::PrimaryAttack()
 {
 	// don't fire underwater

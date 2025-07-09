@@ -92,6 +92,13 @@ void HUD_SendWeaponAnim(int iAnim, int body, bool force)
 
 	// Tell animation system new info
 	gEngfuncs.pfnWeaponAnim(iAnim, body);
+
+	auto view = gEngfuncs.GetViewModel();
+
+	view->curstate.sequence = iAnim;
+	view->curstate.animtime = gEngfuncs.GetClientTime();
+	view->curstate.body = body;
+	view->curstate.frame = 0.0f;
 }
 
 /*
@@ -276,3 +283,14 @@ int stub_PrecacheSound(const char* s) { return 0; }
 unsigned short stub_PrecacheEvent(int type, const char* s) { return 0; }
 const char* stub_NameForFunction(uint32 function) { return "func"; }
 void stub_SetModel(edict_t* e, const char* m) {}
+
+void stub_MessageBegin(int msg_dest, int msg_type, const float* pOrigin, struct edict_s* ed) {}
+void stub_MessageEnd() {}
+void stub_WriteByte(int iValue) {}
+void stub_WriteChar(int iValue) {}
+void stub_WriteShort(int iValue) {}
+void stub_WriteLong(int iValue) {}
+void stub_WriteAngle(float flValue) {}
+void stub_WriteCoord(float flValue) {}
+void stub_WriteString(const char* sz) {}
+void stub_WriteEntity(int iValue) {}

@@ -20,27 +20,71 @@
 #include "weapons.h"
 #include "player.h"
 
+#include "UserMessages.h"
+
+extern bool CanAttack(float attack_time, float curtime, bool isPredicted);
+
 LINK_ENTITY_TO_CLASS(weapon_glock, CGlock);
 LINK_ENTITY_TO_CLASS(weapon_9mmhandgun, CGlock);
+LINK_ENTITY_TO_CLASS_SPECIAL(weapon_silencer, CGlock, CGlock_SpawnSilenced);
+
+void CGlock_SpawnSilenced(entvars_s* pev)
+{
+	pev->body = 1; 
+}
 
 void CGlock::Spawn()
 {
 	pev->classname = MAKE_STRING("weapon_9mmhandgun"); // hack to allow for old names
 	Precache();
 	m_iId = WEAPON_GLOCK;
-	SET_MODEL(ENT(pev), "models/w_9mmhandgun.mdl");
+	
+	if (pev->body != 0)
+		SET_MODEL(ENT(pev), "models/w_silencer.mdl");
+	else
+		SET_MODEL(ENT(pev), "models/w_9mmhandgun.mdl");
 
 	m_iDefaultAmmo = GLOCK_DEFAULT_GIVE;
 
 	FallInit(); // get ready to fall down.
+	
+	if (pev->body != 0)
+		SetTouch(&CGlock::DefaultTouch);
 }
 
+void CGlock::DefaultTouch(CBaseEntity* pOther)
+{
+	if (!pOther->IsPlayer())
+		return;
+
+	auto pPlayer = reinterpret_cast<CBasePlayer*>(pOther);
+
+	if (!pPlayer->HasWeaponBit(WEAPON_GLOCK_SILENCER) && pev->body != 0)
+	{
+		SET_MODEL(ENT(pev), "models/w_9mmhandgun.mdl");
+		pPlayer->SetWeaponBit(WEAPON_GLOCK_SILENCER);
+		m_bSilencer = true;
+	
+		if (pPlayer->HasWeaponBit(WEAPON_GLOCK))
+		{
+			MESSAGE_BEGIN(MSG_ONE, gmsgWeapPickup, NULL, pPlayer->pev);
+			WRITE_BYTE(WEAPON_GLOCK);
+			MESSAGE_END();
+		}
+
+		EMIT_SOUND(ENT(pPlayer->pev), CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM);
+	}
+
+	CBasePlayerWeapon::DefaultTouch(pOther);
+}
 
 void CGlock::Precache()
 {
 	PRECACHE_MODEL("models/v_9mmhandgun.mdl");
 	PRECACHE_MODEL("models/w_9mmhandgun.mdl");
 	PRECACHE_MODEL("models/p_9mmhandgun.mdl");
+	
+	PRECACHE_MODEL("models/w_silencer.mdl");
 
 	m_iShell = PRECACHE_MODEL("models/shell.mdl"); // brass shell
 
@@ -62,7 +106,7 @@ bool CGlock::GetItemInfo(ItemInfo* p)
 	p->iMaxAmmo1 = _9MM_MAX_CARRY;
 	p->pszAmmo2 = NULL;
 	p->iMaxAmmo2 = -1;
-	p->iMaxClip = GLOCK_MAX_CLIP;
+	p->iMaxClip = GLOCK_MAX_CLIP + 1;
 	p->iSlot = 1;
 	p->iPosition = 0;
 	p->iFlags = 0;
@@ -72,10 +116,38 @@ bool CGlock::GetItemInfo(ItemInfo* p)
 	return true;
 }
 
+void CGlock::AddToPlayer(CBasePlayer* pPlayer)
+{
+	CBasePlayerWeapon::AddToPlayer(pPlayer);
+}
+
 bool CGlock::Deploy()
 {
-	// pev->body = 1;
-	return DefaultDeploy("models/v_9mmhandgun.mdl", "models/p_9mmhandgun.mdl", GLOCK_DRAW, "onehanded");
+	pev->body = m_bSilencer ? 1 : 0;
+	return DefaultDeploy("models/v_9mmhandgun.mdl", "models/p_9mmhandgun.mdl", GLOCK_DRAW, "onehanded", pev->body);
+}
+
+void CGlock::AddSilencer()
+{
+	if (!m_pPlayer->HasWeaponBit(WEAPON_GLOCK_SILENCER))
+		return;
+
+	if (m_bSilencer)
+	{
+		SendWeaponAnim(GLOCK_HOLSTER);
+		m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 1.0f;
+		m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 2.0f;
+	}
+	else
+	{
+		SendWeaponAnim(GLOCK_ADD_SILENCER);
+		m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.8f;
+		m_flNextPrimaryAttack = m_flNextSecondaryAttack = UTIL_WeaponTimeBase() + 3.3f;
+	}
+
+	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + 4.0f;
+
+	m_iSilencerState = 1;
 }
 
 void CGlock::SecondaryAttack()
@@ -103,7 +175,6 @@ void CGlock::GlockFire(float flSpread, float flCycleTime, bool fUseAutoAim)
 
 	m_iClip--;
 
-	m_pPlayer->pev->effects = (int)(m_pPlayer->pev->effects) | EF_MUZZLEFLASH;
 
 	int flags;
 
@@ -127,6 +198,9 @@ void CGlock::GlockFire(float flSpread, float flCycleTime, bool fUseAutoAim)
 		// non-silenced
 		m_pPlayer->m_iWeaponVolume = NORMAL_GUN_VOLUME;
 		m_pPlayer->m_iWeaponFlash = NORMAL_GUN_FLASH;
+
+
+		m_pPlayer->pev->effects = (int)(m_pPlayer->pev->effects) | EF_MUZZLEFLASH;
 	}
 
 	Vector vecSrc = m_pPlayer->GetGunPosition();
@@ -161,7 +235,13 @@ void CGlock::Reload()
 	if (m_pPlayer->ammo_9mm <= 0)
 		return;
 
-	bool iResult = DefaultReload(17, m_iClip > 0 ? GLOCK_RELOAD_NOT_EMPTY : GLOCK_RELOAD, 1.5);
+	bool iResult;
+
+	if (m_iClip == 0)
+		iResult = DefaultReload(iMaxClip(), GLOCK_RELOAD, 1.5);
+	else
+		iResult = DefaultReload(iMaxClip(), GLOCK_RELOAD_NOT_EMPTY, 1.5);
+
 	if (iResult)
 	{
 		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat(m_pPlayer->random_seed, 10, 15);
@@ -169,6 +249,81 @@ void CGlock::Reload()
 }
 
 
+void CGlock::ItemPostFrame()
+{
+	// 17 + 1 reload
+	if ((m_fInReload) && (m_pPlayer->m_flNextAttack <= UTIL_WeaponTimeBase()))
+	{
+		int iMax = iMaxClip();
+
+		if (m_iClip == 0)
+			--iMax;
+
+		// complete the reload.
+		int j = V_min(iMax - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);
+
+		// Add them to the clip
+		m_iClip += j;
+		m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] -= j;
+
+		m_pPlayer->TabulateAmmo();
+
+		m_fInReload = false;
+	}
+
+	if (m_iSilencerState != 0 && m_iSilencerState != 5)
+	{
+		if (!m_bSilencer)
+		{
+			if (m_iSilencerState == 1)
+			{
+				m_iSilencerState = 2;
+				SetBody(1);
+				m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 2.1f;
+			}
+			else if (m_iSilencerState == 2)
+			{
+				m_iSilencerState = 0;
+				m_bSilencer = true;
+			}
+		}
+		else
+		{
+			if (m_iSilencerState != 0)
+			{
+				m_iSilencerState = 0;
+				m_bSilencer = false;
+				SendWeaponAnim(GLOCK_DRAW);
+				SetBody(0);
+				m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.3f;
+			}
+		}
+	}
+
+	if ((m_pPlayer->pev->button & IN_ATTACK) == 0)
+	{
+		m_flLastFireTime = 0.0f;
+	}
+
+	if ((m_pPlayer->pev->button & IN_ALT1) != 0 && CanAttack(m_flNextSecondaryAttack, gpGlobals->time, UseDecrement()))
+	{
+		m_pPlayer->TabulateAmmo();
+		AddSilencer();
+		m_pPlayer->pev->button &= ~IN_ALT1;
+	}
+	else
+		CBasePlayerWeapon::ItemPostFrame();
+}
+
+void CGlock::Holster()
+{
+	m_fInReload = false; // cancel any reload in progress.
+
+	m_iSilencerState = 0;
+
+	SendWeaponAnim(GLOCK_HOLSTER);
+	m_pPlayer->m_flNextAttack = UTIL_WeaponTimeBase() + 0.98f;
+}
 
 void CGlock::WeaponIdle()
 {
@@ -179,6 +334,10 @@ void CGlock::WeaponIdle()
 	if (m_flTimeWeaponIdle > UTIL_WeaponTimeBase())
 		return;
 
+//	Prevent client side jankiness
+#ifdef CLIENT_DLL
+	SetBody(m_bSilencer ? 1 : 0);
+#endif
 	// only idle if the slid isn't back
 	if (m_iClip != 0)
 	{

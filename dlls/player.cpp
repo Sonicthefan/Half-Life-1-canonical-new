@@ -120,6 +120,9 @@ TYPEDESCRIPTION CBasePlayer::m_playerSaveData[] =
 
 		DEFINE_FIELD(CBasePlayer, m_flStartCharge, FIELD_TIME),
 
+		DEFINE_FIELD(CBasePlayer, m_pNextItem, FIELD_CLASSPTR),
+		
+
 		//DEFINE_FIELD( CBasePlayer, m_fDeadTime, FIELD_FLOAT ), // only used in multiplayer games
 		//DEFINE_FIELD( CBasePlayer, m_fGameHUDInitialized, FIELD_INTEGER ), // only used in multiplayer games
 		//DEFINE_FIELD( CBasePlayer, m_flStopExtraSoundTime, FIELD_TIME ),
@@ -538,7 +541,8 @@ bool CBasePlayer::TakeDamage(entvars_t* pevInflictor, entvars_t* pevAttacker, fl
 		}
 	}
 
-	pev->punchangle.x = -2;
+	if ((bitsDamageType & DMG_FALL) == 0)
+		pev->punchangle.x = -2;
 
 	if (fTookDamage && !ftrivial && fmajor && flHealthPrev >= 75)
 	{
@@ -805,6 +809,8 @@ void CBasePlayer::RemoveAllItems(bool removeSuit)
 
 	//Re-add suit bit if needed.
 	SetHasSuit(!removeSuit);
+	if (!removeSuit)
+		SetWeaponBit(WEAPON_GLOCK_SILENCER);
 
 	for (i = 0; i < MAX_AMMO_SLOTS; i++)
 		m_rgAmmo[i] = 0;
@@ -2678,7 +2684,7 @@ void CBasePlayer::PostThink()
 			if (flFallDamage > 0)
 			{
 				TakeDamage(CWorld::World->pev, CWorld::World->pev, flFallDamage, DMG_FALL);
-				pev->punchangle.x = 0;
+			//	pev->punchangle.x = 0;
 			}
 		}
 
@@ -3176,19 +3182,63 @@ void CBasePlayer::SelectNextItem(int iItem)
 
 	ResetAutoaim();
 
+	if (m_pActiveItem)
+	{
+		m_pActiveItem->m_ForceSendAnimations = true;
+		m_pActiveItem->Holster();
+		m_pActiveItem->m_ForceSendAnimations = false;
+	}
+
+
+	m_pLastItem = m_pActiveItem;
+	m_pActiveItem = nullptr;
+	m_pNextItem = pItem;
+}
+
+void CBasePlayer::SelectItem(int iId)
+{
+	if (iId <= WEAPON_NONE)
+		return;
+
+	CBasePlayerItem* pItem = NULL;
+
+	for (int i = 0; i < MAX_ITEM_TYPES; i++)
+	{
+		if (m_rgpPlayerItems[i])
+		{
+			pItem = m_rgpPlayerItems[i];
+
+			while (pItem)
+			{
+				if (pItem->m_iId == iId)
+					break;
+				pItem = pItem->m_pNext;
+			}
+		}
+
+		if (pItem)
+			break;
+	}
+
+	if (!pItem)
+		return;
+
+
+	if (pItem == m_pActiveItem)
+		return;
+
+	ResetAutoaim();
+
 	// FIX, this needs to queue them up and delay
 	if (m_pActiveItem)
 	{
+		m_pActiveItem->m_ForceSendAnimations = true;
 		m_pActiveItem->Holster();
+		m_pActiveItem->m_ForceSendAnimations = false;
 	}
-
-	m_pActiveItem = pItem;
-
-	if (m_pActiveItem)
-	{
-		m_pActiveItem->Deploy();
-		m_pActiveItem->UpdateItemInfo();
-	}
+	m_pLastItem = m_pActiveItem;
+	m_pActiveItem = nullptr;
+	m_pNextItem = pItem;
 }
 
 void CBasePlayer::SelectItem(const char* pstr)
@@ -3227,18 +3277,14 @@ void CBasePlayer::SelectItem(const char* pstr)
 
 	// FIX, this needs to queue them up and delay
 	if (m_pActiveItem)
-		m_pActiveItem->Holster();
-
-	m_pLastItem = m_pActiveItem;
-	m_pActiveItem = pItem;
-
-	if (m_pActiveItem)
 	{
 		m_pActiveItem->m_ForceSendAnimations = true;
-		m_pActiveItem->Deploy();
+		m_pActiveItem->Holster();
 		m_pActiveItem->m_ForceSendAnimations = false;
-		m_pActiveItem->UpdateItemInfo();
 	}
+	m_pLastItem = m_pActiveItem;
+	m_pActiveItem = nullptr;
+	m_pNextItem = pItem;
 }
 
 //==============================================
@@ -3953,6 +3999,18 @@ void CBasePlayer::ItemPreFrame()
 		return;
 	}
 
+	if (m_pNextItem)
+	{
+		m_pActiveItem = m_pNextItem;
+
+		m_pActiveItem->m_ForceSendAnimations = true;
+		m_pActiveItem->Deploy();
+		m_pActiveItem->m_ForceSendAnimations = false;
+		m_pActiveItem->UpdateItemInfo();
+
+		m_pNextItem = nullptr;
+	}
+
 	if (!m_pActiveItem)
 		return;
 
@@ -4220,6 +4278,11 @@ void CBasePlayer::UpdateClientData()
 			WRITE_BYTE(1);
 			WRITE_BYTE(m_iFlashBattery);
 			MESSAGE_END();
+		}
+
+		if (m_pActiveItem)
+		{
+			m_pActiveItem->GetWeaponPtr()->SetBody();
 		}
 	}
 
@@ -4863,7 +4926,9 @@ bool CBasePlayer::SwitchWeapon(CBasePlayerItem* pWeapon)
 
 	if (m_pActiveItem)
 	{
+		m_pActiveItem->m_ForceSendAnimations = true;
 		m_pActiveItem->Holster();
+		m_pActiveItem->m_ForceSendAnimations = false;
 	}
 
 	m_pActiveItem = pWeapon;

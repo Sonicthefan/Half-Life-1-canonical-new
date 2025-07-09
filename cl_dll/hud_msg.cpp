@@ -156,3 +156,36 @@ bool CHud::MsgFunc_Weapons(const char* pszName, int iSize, void* pbuf)
 
 	return true;
 }
+
+bool CHud::MsgFunc_SetBody(const char* pszName, int iSize, void* pbuf)
+{
+	BEGIN_READ(pbuf, iSize);
+
+	int body = READ_SHORT();
+
+	auto view = gEngfuncs.GetViewModel();
+
+	view->curstate.body = body;
+
+	return true;
+}
+
+bool CHud::MsgFunc_SetWpnAnim(const char* pszName, int iSize, void* pbuf)
+{
+	BEGIN_READ(pbuf, iSize);
+
+	int anim = READ_SHORT();
+	int body = READ_SHORT();
+
+	auto view = gEngfuncs.GetViewModel();
+
+	gEngfuncs.pfnWeaponAnim(anim, body);
+
+	view->curstate.sequence = anim;
+	view->curstate.animtime = gEngfuncs.GetClientTime();
+	view->curstate.body = body;
+
+	view->curstate.frame = 0.0f;
+
+	return true;
+}

@@ -477,7 +477,7 @@ void CBasePlayerItem::Materialize()
 	pev->solid = SOLID_TRIGGER;
 
 	UTIL_SetOrigin(pev, pev->origin); // link into world.
-	SetTouch(&CBasePlayerItem::DefaultTouch);
+	//SetTouch(&CBasePlayerItem::DefaultTouch);
 	SetThink(NULL);
 }
 
@@ -730,9 +730,21 @@ void CBasePlayerWeapon::SendWeaponAnim(int iAnim, int body)
 		return;
 #endif
 
-	MESSAGE_BEGIN(MSG_ONE, SVC_WEAPONANIM, NULL, m_pPlayer->pev);
-	WRITE_BYTE(iAnim);	   // sequence number
-	WRITE_BYTE(pev->body); // weaponmodel bodygroup.
+	MESSAGE_BEGIN(MSG_ONE, gmsgSetWpnAnim, NULL, m_pPlayer->pev);
+	WRITE_SHORT(iAnim);	   // sequence number
+	WRITE_SHORT(pev->body); // weaponmodel bodygroup.
+	MESSAGE_END();
+}
+
+void CBasePlayerWeapon::SetBody(int body)
+{
+	if (body < 0)
+		body = pev->body;
+	else
+		pev->body = body;
+
+	MESSAGE_BEGIN(MSG_ONE, gmsgSetBody, NULL, m_pPlayer->pev);
+	WRITE_SHORT(body); // weaponmodel bodygroup.
 	MESSAGE_END();
 }
 
@@ -1459,3 +1471,10 @@ TYPEDESCRIPTION CSatchel::m_SaveData[] =
 		DEFINE_FIELD(CSatchel, m_chargeReady, FIELD_INTEGER),
 };
 IMPLEMENT_SAVERESTORE(CSatchel, CBasePlayerWeapon);
+
+TYPEDESCRIPTION CGlock::m_SaveData[] =
+	{
+		DEFINE_FIELD(CGlock, m_bSilencer, FIELD_BOOLEAN),
+		DEFINE_FIELD(CGlock, m_iSilencerState, FIELD_INTEGER),
+};
+IMPLEMENT_SAVERESTORE(CGlock, CBasePlayerWeapon);

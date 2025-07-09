@@ -217,7 +217,17 @@ void CBasePlayerWeapon::SendWeaponAnim(int iAnim, int body)
 {
 	m_pPlayer->pev->weaponanim = iAnim;
 
-	HUD_SendWeaponAnim(iAnim, body, false);
+	HUD_SendWeaponAnim(iAnim, pev->body, false);
+}
+
+void CBasePlayerWeapon::SetBody(int body)
+{
+	if (body < 0)
+		body = pev->body;
+
+	auto view = gEngfuncs.GetViewModel();
+
+	view->curstate.body = body;
 }
 
 /*
@@ -445,6 +455,18 @@ void HUD_InitClientWeapons()
 	g_engfuncs.pfnCVarGetPointer = gEngfuncs.pfnGetCvarPointer;
 	g_engfuncs.pfnCVarGetString = gEngfuncs.pfnGetCvarString;
 	g_engfuncs.pfnCVarGetFloat = gEngfuncs.pfnGetCvarFloat;
+
+	// User Messages
+	g_engfuncs.pfnMessageBegin = stub_MessageBegin;
+	g_engfuncs.pfnMessageEnd = stub_MessageEnd;
+	g_engfuncs.pfnWriteAngle = stub_WriteAngle;
+	g_engfuncs.pfnWriteByte = stub_WriteByte;
+	g_engfuncs.pfnWriteChar = stub_WriteChar;
+	g_engfuncs.pfnWriteCoord = stub_WriteCoord;
+	g_engfuncs.pfnWriteEntity = stub_WriteEntity;
+	g_engfuncs.pfnWriteLong = stub_WriteLong;
+	g_engfuncs.pfnWriteShort = stub_WriteShort;
+	g_engfuncs.pfnWriteString = stub_WriteString;
 
 	// Allocate a slot for the local player
 	HUD_PrepEntity(&player, NULL);
@@ -700,6 +722,22 @@ void HUD_WeaponsPostThink(local_state_s* from, local_state_s* to, usercmd_t* cmd
 		((CRpg*)player.m_pActiveItem)->m_fSpotActive = static_cast<bool>(from->client.vuser2[1]);
 		((CRpg*)player.m_pActiveItem)->m_cActiveRockets = (int)from->client.vuser2[2];
 	}
+	else if (player.m_pActiveItem->m_iId == WEAPON_GLOCK)
+	{
+		bool bSilencer = false;
+		bSilencer = ((CGlock*)player.m_pActiveItem)->m_bSilencer = static_cast<bool>(from->client.vuser2[1]);
+		((CGlock*)player.m_pActiveItem)->m_iSilencerState = (int)from->client.vuser2[2];
+		player.m_pActiveItem->pev->body = bSilencer ? 1 : 0;
+	}
+	else if (player.m_pActiveItem->m_iId == WEAPON_TRIPMINE)
+	{
+		((CTripmine*)player.m_pActiveItem)->m_bReDeploy = static_cast<bool>(from->client.vuser2[1]);
+		((CTripmine*)player.m_pActiveItem)->m_flAnimTime = (float)from->client.vuser2[2];
+	}
+	else if (player.m_pActiveItem->m_iId == WEAPON_EGON)
+	{
+		((CEgon*)player.m_pActiveItem)->m_flAnimTime = (float)(from->client.vuser2[1]);
+	}
 
 	// Don't go firing anything if we have died or are spectating
 	// Or if we don't have a weapon model deployed
@@ -767,6 +805,20 @@ void HUD_WeaponsPostThink(local_state_s* from, local_state_s* to, usercmd_t* cmd
 	{
 		to->client.vuser2[1] = static_cast<float>(((CRpg*)player.m_pActiveItem)->m_fSpotActive);
 		to->client.vuser2[2] = ((CRpg*)player.m_pActiveItem)->m_cActiveRockets;
+	}
+	else if (player.m_pActiveItem->m_iId == WEAPON_GLOCK)
+	{
+		to->client.vuser2[1] = static_cast<float>(((CGlock*)player.m_pActiveItem)->m_bSilencer);
+		to->client.vuser2[2] = static_cast<float>(((CGlock*)player.m_pActiveItem)->m_iSilencerState);
+	}
+	else if (player.m_pActiveItem->m_iId == WEAPON_TRIPMINE)
+	{
+		to->client.vuser2[1] = static_cast<float>(((CTripmine*)player.m_pActiveItem)->m_bReDeploy);
+		to->client.vuser2[2] = static_cast<float>(((CTripmine*)player.m_pActiveItem)->m_flAnimTime);
+	}
+	else if (player.m_pActiveItem->m_iId == WEAPON_EGON)
+	{
+		to->client.vuser2[1] = static_cast<float>(((CEgon*)player.m_pActiveItem)->m_flAnimTime);
 	}
 
 	// Make sure that weapon animation matches what the game .dll is telling us

@@ -88,6 +88,16 @@ typedef int EOFFSET;
 	extern "C" DLLEXPORT void mapClassName(entvars_t* pev); \
 	void mapClassName(entvars_t* pev) { GetClassPtr((DLLClassName*)pev); }
 
+// Calls additional func when creating entity
+#define LINK_ENTITY_TO_CLASS_SPECIAL(mapClassName, DLLClassName, ExtraFunc)    \
+	void ExtraFunc(entvars_t* pev);\
+	extern "C" DLLEXPORT void mapClassName(entvars_t* pev); \
+	void mapClassName(entvars_t* pev)                               \
+	{                                                               \
+		GetClassPtr((DLLClassName*)pev);                            \
+		ExtraFunc(pev);                                                 \
+	}
+
 /**
 *	@brief Gets the list of entities.
 *	Will return @c nullptr if there is no map loaded.
@@ -174,7 +184,7 @@ inline bool FStringNull(int iString)
 
 // All monsters need this data
 #define DONT_BLEED -1
-#define BLOOD_COLOR_RED (byte)247
+#define BLOOD_COLOR_RED (byte)73
 #define BLOOD_COLOR_YELLOW (byte)195
 #define BLOOD_COLOR_GREEN BLOOD_COLOR_YELLOW
 

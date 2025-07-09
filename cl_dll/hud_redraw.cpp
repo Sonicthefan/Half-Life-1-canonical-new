@@ -22,6 +22,8 @@
 
 #define MAX_LOGO_FRAMES 56
 
+extern WEAPON* gpActiveSel;
+
 int grgLogoFrame[MAX_LOGO_FRAMES] =
 	{
 		1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 13, 13, 13, 13, 13, 12, 11, 10, 9, 8, 14, 15,
@@ -144,6 +146,11 @@ bool CHud::Redraw(float flTime, bool intermission)
 
 		while (pList)
 		{
+			if (gpActiveSel && (pList->p != &m_Ammo))
+			{
+				pList = pList->pNext;
+				continue;
+			}
 			if (!intermission)
 			{
 				if ((pList->p->m_iFlags & HUD_ACTIVE) != 0 && (m_iHideHUDDisplay & HIDEHUD_ALL) == 0)

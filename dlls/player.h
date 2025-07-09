@@ -181,6 +181,7 @@ public:
 	// usable player items
 	CBasePlayerItem* m_rgpPlayerItems[MAX_ITEM_TYPES];
 	CBasePlayerItem* m_pActiveItem;
+	CBasePlayerItem* m_pNextItem;
 	CBasePlayerItem* m_pClientActiveItem; // client version of the active item
 	CBasePlayerItem* m_pLastItem;
 
@@ -242,6 +243,7 @@ public:
 	*/
 	void EquipWeapon();
 
+	bool HasWeaponBit(int id);
 	void SetWeaponBit(int id);
 	void ClearWeaponBit(int id);
 
@@ -357,6 +359,11 @@ public:
 	//True if the player is currently spawning.
 	bool m_bIsSpawning = false;
 };
+
+inline bool CBasePlayer::HasWeaponBit(int id)
+{
+	return (m_WeaponBits & (1ULL << id)) != 0;
+}
 
 inline void CBasePlayer::SetWeaponBit(int id)
 {

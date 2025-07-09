@@ -30,6 +30,9 @@
 #include "demo_api.h"
 #include "vgui_ScorePanel.h"
 
+#include "com_model.h"
+#include "r_studioint.h"
+
 #include <string>
 
 hud_player_info_t g_PlayerInfoList[MAX_PLAYERS_HUD + 1];	// player info from the engine
@@ -88,6 +91,9 @@ cvar_t* cl_rollangle = nullptr;
 cvar_t* cl_rollspeed = nullptr;
 cvar_t* cl_bobtilt = nullptr;
 cvar_t* r_decals = nullptr;
+
+cvar_t* sys_timescale;
+cvar_t* r_shadows;
 
 void ShutdownInput();
 
@@ -282,6 +288,16 @@ int __MsgFunc_AllowSpec(const char* pszName, int iSize, void* pbuf)
 	return 0;
 }
 
+int __MsgFunc_SetBody(const char* pszName, int iSize, void* pbuf)
+{
+	return gHUD.MsgFunc_SetBody(pszName, iSize, pbuf);
+}
+
+int __MsgFunc_SetWpnAnim(const char* pszName, int iSize, void* pbuf)
+{
+	return gHUD.MsgFunc_SetWpnAnim(pszName, iSize, pbuf);
+}
+
 // This is called every time the DLL is loaded
 void CHud::Init()
 {
@@ -321,6 +337,9 @@ void CHud::Init()
 	// VGUI Menus
 	HOOK_MESSAGE(VGUIMenu);
 
+	HOOK_MESSAGE(SetBody);
+	HOOK_MESSAGE(SetWpnAnim);
+
 	CVAR_CREATE("hud_classautokill", "1", FCVAR_ARCHIVE | FCVAR_USERINFO); // controls whether or not to suicide immediately on TF class switch
 	CVAR_CREATE("hud_takesshots", "0", FCVAR_ARCHIVE);					   // controls whether or not to automatically take screenshots at the end of a round
 
@@ -338,6 +357,18 @@ void CHud::Init()
 	cl_rollspeed = CVAR_CREATE("cl_rollspeed", "200", FCVAR_ARCHIVE);
 	cl_bobtilt = CVAR_CREATE("cl_bobtilt", "0", FCVAR_ARCHIVE);
 	r_decals = gEngfuncs.pfnGetCvarPointer("r_decals");
+
+		auto r_mirroralpha = gEngfuncs.pfnGetCvarPointer("r_mirroralpha");
+	if (r_mirroralpha)
+	{
+		r_shadows = (cvar_t*)((char*)r_mirroralpha - 36);
+		r_shadows->flags |= FCVAR_ARCHIVE;
+
+		Cvar_Register(r_shadows);
+	}
+	sys_timescale = (cvar_t*)((char*)gEngfuncs.pfnGetCvarPointer("fps_max") - 36);
+
+	Cvar_Register(sys_timescale);
 
 	m_pSpriteList = NULL;
 

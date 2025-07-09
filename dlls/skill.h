@@ -30,6 +30,8 @@ struct skilldata_t
 	float apacheHealth;
 
 	float barneyHealth;
+	
+	float otisHealth;
 
 	float bigmommaHealthFactor; // Multiply each node's health by this
 	float bigmommaDmgSlash;		// melee attack damage
@@ -79,6 +81,8 @@ struct skilldata_t
 	float nihilanthZap;
 
 	float scientistHealth;
+	
+	float cleansuitScientistHealth;
 
 	float snarkHealth;
 	float snarkDmgBite;
@@ -87,6 +91,19 @@ struct skilldata_t
 	float zombieHealth;
 	float zombieDmgOneSlash;
 	float zombieDmgBothSlash;
+	
+	float zombieBarneyHealth;
+	float zombieBarneyDmgOneSlash;
+	float zombieBarneyDmgBothSlash;
+
+	float zombieSoldierHealth;
+	float zombieSoldierDmgOneSlash;
+	float zombieSoldierDmgBothSlash;
+
+	float gonomeDmgGuts;
+	float gonomeHealth;
+	float gonomeDmgOneSlash;
+	float gonomeDmgOneBite;
 
 	float turretHealth;
 	float miniturretHealth;
@@ -123,6 +140,7 @@ struct skilldata_t
 	float healthchargerCapacity;
 	float healthkitCapacity;
 	float scientistHeal;
+	float cleansuitScientistHeal;
 
 	// monster damage adj
 	float monHead;

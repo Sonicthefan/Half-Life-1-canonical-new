@@ -133,6 +133,15 @@ private:
 	WEAPON* m_pWeapon;
 	int m_HUD_bucket0;
 	int m_HUD_selection;
+
+public:
+	int GetCurrentWeaponId()
+	{
+		if (m_pWeapon)
+			return m_pWeapon->iId;
+
+		return -1;
+	}
 };
 
 //
@@ -541,6 +550,7 @@ private:
 	Rect* m_rgrcRects;							  /*[HUD_SPRITE_COUNT]*/
 	char* m_rgszSpriteNames;					  /*[HUD_SPRITE_COUNT][MAX_SPRITE_NAME_LENGTH]*/
 
+public:
 	struct cvar_s* default_fov;
 
 public:
@@ -592,6 +602,9 @@ public:
 	bool MsgFunc_SetFOV(const char* pszName, int iSize, void* pbuf);
 	bool MsgFunc_Concuss(const char* pszName, int iSize, void* pbuf);
 	bool MsgFunc_Weapons(const char* pszName, int iSize, void* pbuf);
+	bool MsgFunc_SetWpnAnim(const char* pszName, int iSize, void* pbuf);
+
+	bool MsgFunc_SetBody(const char* pszName, int iSize, void* pbuf);
 
 	// Screen information
 	SCREENINFO m_scrinfo;
@@ -607,6 +620,11 @@ public:
 	void AddHudElem(CHudBase* p);
 
 	float GetSensitivity();
+	
+	int GetCurrentWeaponId()
+	{
+		return m_Ammo.GetCurrentWeaponId();
+	}
 
 	// Added to prevent crashing in build 8684 and below
 	inline bool IsHL25()
