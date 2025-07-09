@@ -1,0 +1,16 @@
+'void CBasePlayer::SelectItem(int)': overloaded member function not found in 'CBasePlayer'
+illegal reference to non-static member 'CBasePlayer::m_rgpPlayerItems'
+'CBasePlayer::m_rgpPlayerItems': non-standard syntax; use '&' to create a pointer to member
+'[': unable to resolve function overload
+illegal reference to non-static member 'CBasePlayer::m_rgpPlayerItems'
+'CBasePlayer::m_rgpPlayerItems': non-standard syntax; use '&' to create a pointer to member
+'[': unable to resolve function overload
+illegal reference to non-static member 'CBasePlayer::m_pActiveItem'
+'CBasePlayer::m_pActiveItem': non-standard syntax; use '&' to create a pointer to member
+'==': unable to resolve function overload
+'CBasePlayer::ResetAutoaim': a call of a non-static member function requires an object
+illegal reference to non-static member 'CBasePlayer::m_pActiveItem'
+a conditional expression of type 'unknown' is not valid
+illegal reference to non-static member 'CBasePlayer::m_pLastItem'
+illegal reference to non-static member 'CBasePlayer::m_pActiveItem'
+illegal reference to non-static member 'CBasePlayer::m_pNextItem'

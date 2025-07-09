@@ -337,6 +337,8 @@ void W_Precache()
 	g_sModelIndexBloodDrop = PRECACHE_MODEL("sprites/blood.spr");		// splattered blood
 
 	g_sModelIndexLaser = PRECACHE_MODEL((char*)g_pModelNameLaser);
+	//Custom : HL Alpha shrapnel
+    g_sModelIndexShrapnel = PRECACHE_MODEL("models/shrapnel.mdl");        //shrapnel
 	g_sModelIndexLaserDot = PRECACHE_MODEL("sprites/laserdot.spr");
 
 

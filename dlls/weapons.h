@@ -394,6 +394,9 @@ inline DLL_GLOBAL short g_sModelIndexBubbles;	 // holds the index for the bubble
 inline DLL_GLOBAL short g_sModelIndexBloodDrop;	 // holds the sprite index for blood drops
 inline DLL_GLOBAL short g_sModelIndexBloodSpray; // holds the sprite index for blood spray (bigger)
 
+//Custom : HL Alpha shrapnel
+
+inline DLL_GLOBAL short g_sModelIndexShrapnel;    // holds the index for the shrapnel
 extern void ClearMultiDamage();
 extern void ApplyMultiDamage(entvars_t* pevInflictor, entvars_t* pevAttacker);
 extern void AddMultiDamage(entvars_t* pevInflictor, CBaseEntity* pEntity, float flDamage, int bitsDamageType);
