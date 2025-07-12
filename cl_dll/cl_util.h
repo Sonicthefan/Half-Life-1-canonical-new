@@ -184,24 +184,3 @@ inline void UnpackRGB(int& r, int& g, int& b, unsigned long ulRGB)
 
 HSPRITE LoadSprite(const char* pszName);
 
-// HACKHACKHACK
-inline void Cvar_Register(cvar_t* pCvar)
-{
-	cvar_t* pTargetCvar = CVAR_CREATE(pCvar->name, pCvar->string, 0);
-	cvar_t* pNextCvar = gEngfuncs.GetFirstCvarPtr();
-	cvar_t* pPrevCvar;
-
-	while (pNextCvar)
-	{
-		if (pNextCvar == pTargetCvar)
-		{
-			pPrevCvar->next = pCvar;
-			pCvar->next = pNextCvar->next;
-			pCvar->string = pTargetCvar->string;
-			break;
-		}
-
-		pPrevCvar = pNextCvar;
-		pNextCvar = pNextCvar->next;
-	}
-}

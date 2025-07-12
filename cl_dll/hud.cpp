@@ -358,18 +358,6 @@ void CHud::Init()
 	cl_bobtilt = CVAR_CREATE("cl_bobtilt", "0", FCVAR_ARCHIVE);
 	r_decals = gEngfuncs.pfnGetCvarPointer("r_decals");
 
-		auto r_mirroralpha = gEngfuncs.pfnGetCvarPointer("r_mirroralpha");
-	if (r_mirroralpha)
-	{
-		r_shadows = (cvar_t*)((char*)r_mirroralpha - 36);
-		r_shadows->flags |= FCVAR_ARCHIVE;
-
-		Cvar_Register(r_shadows);
-	}
-	sys_timescale = (cvar_t*)((char*)gEngfuncs.pfnGetCvarPointer("fps_max") - 36);
-
-	Cvar_Register(sys_timescale);
-
 	m_pSpriteList = NULL;
 
 	// Clear any old HUD list
