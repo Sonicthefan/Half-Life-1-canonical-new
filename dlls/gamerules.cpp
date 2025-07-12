@@ -273,6 +273,9 @@ void CGameRules::RefreshSkillData()
 	// Scientist
 	gSkillData.scientistHealth = GetSkillCvar("sk_scientist_health");
 
+	// Cleansuit Scientist
+	gSkillData.cleansuitScientistHealth = GetSkillCvar("sk_cleansuit_scientist_health");
+
 	// Snark
 	gSkillData.snarkHealth = GetSkillCvar("sk_snark_health");
 	gSkillData.snarkDmgBite = GetSkillCvar("sk_snark_dmg_bite");
@@ -282,6 +285,16 @@ void CGameRules::RefreshSkillData()
 	gSkillData.zombieHealth = GetSkillCvar("sk_zombie_health");
 	gSkillData.zombieDmgOneSlash = GetSkillCvar("sk_zombie_dmg_one_slash");
 	gSkillData.zombieDmgBothSlash = GetSkillCvar("sk_zombie_dmg_both_slash");
+
+	// Zombie Barney
+	gSkillData.zombieBarneyHealth = GetSkillCvar("sk_zombie_barney_health");
+	gSkillData.zombieBarneyDmgOneSlash = GetSkillCvar("sk_zombie_barney_dmg_one_slash");
+	gSkillData.zombieBarneyDmgBothSlash = GetSkillCvar("sk_zombie_barney_dmg_both_slash");
+
+	// Zombie Soldier
+	gSkillData.zombieSoldierHealth = GetSkillCvar("sk_zombie_soldier_health");
+	gSkillData.zombieSoldierDmgOneSlash = GetSkillCvar("sk_zombie_soldier_dmg_one_slash");
+	gSkillData.zombieSoldierDmgBothSlash = GetSkillCvar("sk_zombie_soldier_dmg_both_slash");
 
 	//Turret
 	gSkillData.turretHealth = GetSkillCvar("sk_turret_health");
@@ -353,6 +366,7 @@ void CGameRules::RefreshSkillData()
 	gSkillData.healthchargerCapacity = GetSkillCvar("sk_healthcharger");
 	gSkillData.healthkitCapacity = GetSkillCvar("sk_healthkit");
 	gSkillData.scientistHeal = GetSkillCvar("sk_scientist_heal");
+	gSkillData.cleansuitScientistHeal = GetSkillCvar("sk_cleansuit_scientist_heal");
 
 	// monster damage adj
 	gSkillData.monHead = GetSkillCvar("sk_monster_head");

@@ -231,6 +231,10 @@ cvar_t sk_scientist_health1 = {"sk_scientist_health1", "0"};
 cvar_t sk_scientist_health2 = {"sk_scientist_health2", "0"};
 cvar_t sk_scientist_health3 = {"sk_scientist_health3", "0"};
 
+// Cleansuit Scientist
+cvar_t sk_cleansuit_scientist_health1 = {"sk_cleansuit_scientist_health1","0"};
+cvar_t sk_cleansuit_scientist_health2 = {"sk_cleansuit_scientist_health2","0"};
+cvar_t sk_cleansuit_scientist_health3 = {"sk_cleansuit_scientist_health3", "0"};
 
 // Snark
 cvar_t sk_snark_health1 = {"sk_snark_health1", "0"};
@@ -259,6 +263,34 @@ cvar_t sk_zombie_dmg_one_slash3 = {"sk_zombie_dmg_one_slash3", "0"};
 cvar_t sk_zombie_dmg_both_slash1 = {"sk_zombie_dmg_both_slash1", "0"};
 cvar_t sk_zombie_dmg_both_slash2 = {"sk_zombie_dmg_both_slash2", "0"};
 cvar_t sk_zombie_dmg_both_slash3 = {"sk_zombie_dmg_both_slash3", "0"};
+
+// Zombie Barney
+
+cvar_t sk_zombie_barney_health1 = {"sk_zombie_barney_health1","0"};
+cvar_t sk_zombie_barney_health2 = {"sk_zombie_barney_health2","0"};
+cvar_t sk_zombie_barney_health3 = {"sk_zombie_barney_health3", "0"};
+
+cvar_t sk_zombie_barney_dmg_one_slash1 = {"sk_zombie_barney_dmg_one_slash1","0"};
+cvar_t sk_zombie_barney_dmg_one_slash2 = {"sk_zombie_barney_dmg_one_slash2","0"};
+cvar_t sk_zombie_barney_dmg_one_slash3 = {"sk_zombie_barney_dmg_one_slash3", "0"};
+
+cvar_t sk_zombie_barney_dmg_both_slash1 = {"sk_zombie_barney_dmg_both_slash1","0"};
+cvar_t sk_zombie_barney_dmg_both_slash2 = {"sk_zombie_barney_dmg_both_slash2","0"};
+cvar_t sk_zombie_barney_dmg_both_slash3 = {"sk_zombie_barney_dmg_both_slash3","0"};
+
+// Zombie Soldier
+
+cvar_t sk_zombie_soldier_health1 = {"sk_zombie_soldier_health1", "0"};
+cvar_t sk_zombie_soldier_health2 = {"sk_zombie_soldier_health2", "0"};
+cvar_t sk_zombie_soldier_health3 = {"sk_zombie_soldier_health3", "0"};
+
+cvar_t sk_zombie_soldier_dmg_one_slash1 = {"sk_zombie_soldier_dmg_one_slash1", "0"};
+cvar_t sk_zombie_soldier_dmg_one_slash2 = {"sk_zombie_soldier_dmg_one_slash2", "0"};
+cvar_t sk_zombie_soldier_dmg_one_slash3 = {"sk_zombie_soldier_dmg_one_slash3", "0"};
+
+cvar_t sk_zombie_soldier_dmg_both_slash1 = {"sk_zombie_soldier_dmg_both_slash1", "0"};
+cvar_t sk_zombie_soldier_dmg_both_slash2 = {"sk_zombie_soldier_dmg_both_slash2", "0"};
+cvar_t sk_zombie_soldier_dmg_both_slash3 = {"sk_zombie_soldier_dmg_both_slash3", "0"};
 
 
 //Turret
@@ -408,6 +440,11 @@ cvar_t sk_healthkit3 = {"sk_healthkit3", "0"};
 cvar_t sk_scientist_heal1 = {"sk_scientist_heal1", "0"};
 cvar_t sk_scientist_heal2 = {"sk_scientist_heal2", "0"};
 cvar_t sk_scientist_heal3 = {"sk_scientist_heal3", "0"};
+
+// Cleansuit Scientist
+cvar_t sk_cleansuit_scientist_heal1 = {"sk_cleansuit_scientist_heal1","0"};
+cvar_t sk_cleansuit_scientist_heal2 = {"sk_cleansuit_scientist_heal2","0"};
+cvar_t sk_cleansuit_scientist_heal3 = {"sk_cleansuit_scientist_heal3","0"};
 
 
 // monster damage adjusters
@@ -708,6 +745,10 @@ void GameDLLInit()
 	CVAR_REGISTER(&sk_scientist_health2); // {"sk_scientist_health2","0"};
 	CVAR_REGISTER(&sk_scientist_health3); // {"sk_scientist_health3","0"};
 
+	// Cleansuit Scientist
+	CVAR_REGISTER(&sk_cleansuit_scientist_health1); // {"sk_cleansuit_scientist_health1","0"};
+	CVAR_REGISTER(&sk_cleansuit_scientist_health2); // {"sk_cleansuit_scientist_health2","0"};
+	CVAR_REGISTER(&sk_cleansuit_scientist_health3); // {"sk_cleansuit_scientist_health3","0"};
 
 	// Snark
 	CVAR_REGISTER(&sk_snark_health1); // {"sk_snark_health1","0"};
@@ -737,6 +778,31 @@ void GameDLLInit()
 	CVAR_REGISTER(&sk_zombie_dmg_both_slash2); // {"sk_zombie_dmg_both_slash2","0"};
 	CVAR_REGISTER(&sk_zombie_dmg_both_slash3); // {"sk_zombie_dmg_both_slash3","0"};
 
+	// Zombie Barney
+	CVAR_REGISTER(&sk_zombie_barney_health1); // {"sk_zombie_barney_health1","0"};
+	CVAR_REGISTER(&sk_zombie_barney_health2); // {"sk_zombie_barney_health3","0"};
+	CVAR_REGISTER(&sk_zombie_barney_health3); // {"sk_zombie_barney_health3","0"};
+
+	CVAR_REGISTER(&sk_zombie_barney_dmg_one_slash1); // {"sk_zombie_barney_dmg_one_slash1","0"};
+	CVAR_REGISTER(&sk_zombie_barney_dmg_one_slash2); // {"sk_zombie_barney_dmg_one_slash2","0"};
+	CVAR_REGISTER(&sk_zombie_barney_dmg_one_slash3); // {"sk_zombie_barney_dmg_one_slash3","0"};
+
+	CVAR_REGISTER(&sk_zombie_barney_dmg_both_slash1); // {"sk_zombie_barney_dmg_both_slash1","0"};
+	CVAR_REGISTER(&sk_zombie_barney_dmg_both_slash2); // {"sk_zombie_barney_dmg_both_slash2","0"};
+	CVAR_REGISTER(&sk_zombie_barney_dmg_both_slash3); // {"sk_zombie_barney_dmg_both_slash3","0"};
+
+	// Zombie Soldier
+	CVAR_REGISTER(&sk_zombie_soldier_health1); // {"sk_zombie_soldier_health1","0"};
+	CVAR_REGISTER(&sk_zombie_soldier_health2); // {"sk_zombie_soldier_health3","0"};
+	CVAR_REGISTER(&sk_zombie_soldier_health3); // {"sk_zombie_soldier_health3","0"};
+
+	CVAR_REGISTER(&sk_zombie_soldier_dmg_one_slash1); // {"sk_zombie_soldier_dmg_one_slash1","0"};
+	CVAR_REGISTER(&sk_zombie_soldier_dmg_one_slash2); // {"sk_zombie_soldier_dmg_one_slash2","0"};
+	CVAR_REGISTER(&sk_zombie_soldier_dmg_one_slash3); // {"sk_zombie_soldier_dmg_one_slash3","0"};
+
+	CVAR_REGISTER(&sk_zombie_soldier_dmg_both_slash1); // {"sk_zombie_soldier_dmg_both_slash1","0"};
+	CVAR_REGISTER(&sk_zombie_soldier_dmg_both_slash2); // {"sk_zombie_soldier_dmg_both_slash2","0"};
+	CVAR_REGISTER(&sk_zombie_soldier_dmg_both_slash3); // {"sk_zombie_soldier_dmg_both_slash3","0"};
 
 	//Turret
 	CVAR_REGISTER(&sk_turret_health1); // {"sk_turret_health1","0"};
@@ -885,6 +951,10 @@ void GameDLLInit()
 	CVAR_REGISTER(&sk_scientist_heal1);
 	CVAR_REGISTER(&sk_scientist_heal2);
 	CVAR_REGISTER(&sk_scientist_heal3);
+
+	CVAR_REGISTER(&sk_cleansuit_scientist_heal1);
+	CVAR_REGISTER(&sk_cleansuit_scientist_heal2);
+	CVAR_REGISTER(&sk_cleansuit_scientist_heal3);
 
 	// monster damage adjusters
 	CVAR_REGISTER(&sk_monster_head1);
