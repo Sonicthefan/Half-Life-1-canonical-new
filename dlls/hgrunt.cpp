@@ -1155,7 +1155,7 @@ void CHGrunt::Spawn()
 	if (FBitSet(pev->weapons, HGRUNT_SHOTGUN))
 	{
 		SetBodygroup(GUN_GROUP, GUN_SHOTGUN);
-		m_cClipSize = 8;
+		m_cClipSize = 6;
 	}
 	else
 	{
