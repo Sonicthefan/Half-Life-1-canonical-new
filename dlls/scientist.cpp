@@ -139,6 +139,10 @@ char* CScientist::GetScientistModel() const
 	{
 		return pszOverride;
 	}
+	if (!FStringNull(pev->model))
+	{
+		return (char*)STRING(pev->model);
+	}
 
 	return "models/scientist.mdl";
 }
@@ -702,6 +706,16 @@ void CScientist::Precache()
 	PRECACHE_SOUND("scientist/sci_pain3.wav");
 	PRECACHE_SOUND("scientist/sci_pain4.wav");
 	PRECACHE_SOUND("scientist/sci_pain5.wav");
+	PRECACHE_SOUND("scientist/sci_pain6.wav");
+	PRECACHE_SOUND("scientist/sci_pain7.wav");
+	PRECACHE_SOUND("scientist/sci_pain8.wav");
+	PRECACHE_SOUND("scientist/sci_pain9.wav");
+	PRECACHE_SOUND("scientist/sci_pain10.wav");
+	PRECACHE_SOUND("scientist/sci_die1.wav");
+	PRECACHE_SOUND("scientist/sci_die2.wav");
+	PRECACHE_SOUND("scientist/sci_die3.wav");
+	PRECACHE_SOUND("scientist/sci_die4.wav");
+
 
 	// every new scientist must call this, otherwise
 	// when a level is loaded, nobody will talk (time is reset to 0)
@@ -823,6 +837,21 @@ void CScientist::PainSound()
 	case 4:
 		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sci_pain5.wav", 1, ATTN_NORM, 0, GetVoicePitch());
 		break;
+	case 5:
+		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sci_pain6.wav", 1, ATTN_NORM, 0, GetVoicePitch());
+		break;
+	case 6:
+		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sci_pain7.wav", 1, ATTN_NORM, 0, GetVoicePitch());
+		break;
+	case 7:
+		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sci_pain8.wav", 1, ATTN_NORM, 0, GetVoicePitch());
+		break;
+	case 8:
+		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sci_pain9.wav", 1, ATTN_NORM, 0, GetVoicePitch());
+		break;
+	case 9:
+		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sci_pain10.wav", 1, ATTN_NORM, 0, GetVoicePitch());
+		break;
 	}
 }
 
@@ -831,7 +860,18 @@ void CScientist::PainSound()
 //=========================================================
 void CScientist::DeathSound()
 {
-	PainSound();
+	switch (RANDOM_LONG(0, 2))
+	{
+	case 0:
+		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sci_die1.wav", 1, ATTN_NORM, 0, GetVoicePitch());
+		break;
+	case 1:
+		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sci_die2.wav", 1, ATTN_NORM, 0, GetVoicePitch());
+		break;
+	case 2:
+		EMIT_SOUND_DYN(ENT(pev), CHAN_VOICE, "scientist/sci_die3.wav", 1, ATTN_NORM, 0, GetVoicePitch());
+		break;
+	}
 }
 
 

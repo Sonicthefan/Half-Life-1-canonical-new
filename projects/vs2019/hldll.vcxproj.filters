@@ -381,6 +381,9 @@
     <ClCompile Include="..\..\dlls\cleansuit_scientist.cpp">
       <Filter>Source Files\dlls</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\dlls\zombie_hev.cpp">
+      <Filter>Source Files\dlls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\dlls\doors.h">

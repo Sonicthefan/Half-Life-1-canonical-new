@@ -1,0 +1,22 @@
+Severity	Code	Description	Project	File	Line	Suppression State	Details
+Error (active)	E0020	identifier "FALSE" is undefined	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	174		
+Error (active)	E0020	identifier "TRUE" is undefined	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	177		
+Error (active)	E0020	identifier "TRUE" is undefined	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	183		
+Error (active)	E0298	inherited member is not allowed	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	214		
+Error (active)	E0020	identifier "FALSE" is undefined	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	324		
+Error (active)	E0020	identifier "TRUE" is undefined	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	335		
+Error (active)	E0169	expected a declaration	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	343		
+Error	C2065	'FALSE': undeclared identifier	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	174		
+Error	C2065	'TRUE': undeclared identifier	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	177		
+Error	C2065	'FALSE': undeclared identifier	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	180		
+Error	C2065	'TRUE': undeclared identifier	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	183		
+Error	C2509	'DeathSound': member function not declared in 'CHEVZombie'	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	214		
+Error	C2065	'FALSE': undeclared identifier	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	324		
+Error	C2065	'FALSE': undeclared identifier	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	325		
+Error	C2065	'TRUE': undeclared identifier	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	335		
+Error	C2065	'TRUE': undeclared identifier	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	336		
+Error	C2059	syntax error: '}'	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	343		
+Error	C2143	syntax error: missing ';' before '}'	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	343		
+Error	C2143	syntax error: missing ';' before '{'	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	349		
+Error	C2447	'{': missing function header (old-style formal list?)	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	349		
+Error	C2509	'KeyValue': member function not declared in 'CHEVZombie'	hldll	C:\github\Half-Life-1-canonical-new\dlls\zombie_hev.cpp	396		
