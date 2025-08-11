@@ -288,7 +288,7 @@ void CHGrunt::GibMonster()
 	Vector vecGunPos;
 	Vector vecGunAngles;
 
-	if (GetBodygroup(2) != 2)
+	if (GetBodygroup(GUN_GROUP) != GUN_NONE)
 	{ // throw a gun if the grunt has one
 		GetAttachment(0, vecGunPos, vecGunAngles);
 
@@ -325,7 +325,7 @@ void CHGrunt::GibMonster()
 	//int bodygroup = GetBodygroup(HEAD_GROUP);
 	//ALERT(at_aiconsole, "Bodygroup is : %i \n", bodygroup);
 
-	if (HEAD_BLOWNOFF == GetBodygroup(HEAD_GROUP))
+	if (GetBodygroup(HEAD_GROUP) == HEAD_BLOWNOFF)
 	{
 		EMIT_SOUND(ENT(pev), CHAN_WEAPON, "common/bodysplat.wav", 1, ATTN_NORM);
 
@@ -738,7 +738,7 @@ void CHGrunt::TraceAttack(entvars_t* pevAttacker, float flDamage, Vector vecDir,
 
 
 		//So that we can have headshot death animations
-		ptr->iHitgroup == HITGROUP_HEAD;
+		ptr->iHitgroup = HITGROUP_HEAD;
 		//You're dead
 		pev->health = 0;
 	}
